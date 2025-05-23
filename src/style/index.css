@@ -10,3 +10,8 @@ body {
 #ScrollBar::-webkit-scrollbar{
     display: none
 }
+
+/*  Add New Code  */
+#id{
+    color: red;
+}
