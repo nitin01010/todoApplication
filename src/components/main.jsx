@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { MdDeleteOutline } from "react-icons/md";
 import { MdOutlineModeEdit } from "react-icons/md";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodo, delTodo, updateTodo } from '../features/todo/todoSlice';
 
 const Main = () => {
-    const [data, Setdata] = useState([]);
     const [input, setInput] = useState({
         name: ''
     });
@@ -13,36 +13,22 @@ const Main = () => {
         if (input.name === '') {
             return alert('Please enter a task');
         }
-        Setdata(pretask => [...pretask, input].reverse());
+        dispatch(addTodo(input));
         setInput({
             name: ""
         });
     }
 
     const DeleteItam = (val) => {
-        const newdata = data?.filter((item, id) => {
-            return id !== val
-        })
-        Setdata(newdata);
+        dispatch(delTodo(val))
     }
 
     const updateItem = (indexToUpdate) => {
-        const newTaskVal = prompt("Please enter a value");
-        if (!newTaskVal) {
-            return alert("Please enter a valid task");
-        }
-
-        const newData = data.map((item, index) => {
-            if (index === indexToUpdate) {
-                return newTaskVal;
-            }
-            return item;
-        });
-
-        Setdata(newData);
+        dispatch(updateTodo(indexToUpdate));
     };
 
-    // CRUD done in todo also Validation 
+    const data1 = useSelector((state) => state.todos);
+    const dispatch = useDispatch();
 
     return (
         <div className=' bg-white w-full  md:w-[50%] h-[600px]  rounded-md p-5 overflow-hidden'>
@@ -54,13 +40,13 @@ const Main = () => {
 
             <div id='ScrollBar' className=' overflow-scroll z-0 overflow-y-scroll h-[400px] mt-4'>
                 {
-                    data?.map((item, idx) => {
+                    [...data1.todo].reverse()?.map((item, idx) => {
                         return (
-                            <div key={idx} className={` flex items-center justify-between z-0 bg-yellow-300 mt-5 px-3 rounded-md border py-3  ${idx === data.length - 1 ? 'mb-5' : ''}`}>
+                            <div key={idx} className={` flex items-center justify-between z-0 bg-yellow-300 mt-5 px-3 rounded-md border py-3  ${idx === data1.length - 1 ? 'mb-5' : ''}`}>
                                 <p>{item}</p>
                                 <div className=' flex gap-5'>
-                                    <MdDeleteOutline className=' cursor-pointer' size={25} onClick={() => DeleteItam(idx)} />
-                                    <MdOutlineModeEdit className=' cursor-pointer' size={25} onClick={() => updateItem(idx)} />
+                                    <MdDeleteOutline className=' cursor-pointer' size={25} onClick={() => DeleteItam(item)} />
+                                    <MdOutlineModeEdit className=' cursor-pointer' size={25} onClick={() => updateItem(item)} />
                                 </div>
                             </div>
                         )
